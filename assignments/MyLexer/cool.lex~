@@ -14,6 +14,7 @@ import java_cup.runtime.Symbol;
  *  was there initially.  */
 
     // Max size of string constants
+    // initial
     static int MAX_STR_CONST = 1025;
 
     // For assembling string constants
@@ -68,13 +69,60 @@ import java_cup.runtime.Symbol;
 
 %class CoolLexer
 %cup
+%notunix
 
 %%
 
-<YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
-                                     Further lexical rules should be defined
-                                     here, after the last %% separator */
-                                  return new Symbol(TokenConstants.DARROW); }
+"[0-9]+"                          { System.out.println("Integer: " + yytext()); }          
+
+"[a-zA-Z_0-9]+[a-zA-Z_]+"         { String string = yytext();
+
+                                    if (string.toLowerCase().equals("class") ||
+                                        string.toLowerCase().equals("esle") ||
+                                        string.toLowerCase().equals("fi") ||
+                                        string.toLowerCase().equals("if") ||
+                                        string.toLowerCase().equals("in") ||
+                                        string.toLowerCase().equals("inherits") ||
+                                        string.toLowerCase().equals("isvoid") ||
+                                        string.toLowerCase().equals("let") ||
+                                        string.toLowerCase().equals("loop") ||
+                                        string.toLowerCase().equals("pool") ||
+                                        string.toLowerCase().equals("then") ||
+                                        string.toLowerCase().equals("while") ||
+                                        string.toLowerCase().equals("case") ||
+                                        string.toLowerCase().equals("esac") ||
+                                        string.toLowerCase().equals("new") ||
+                                        string.toLowerCase().equals("of") ||
+                                        string.toLowerCase().equals("not")) {
+
+				        System.out.println("Keyword: " + string.toLowerCase());
+		                    }
+                                    else {
+                                        
+				        System.out.println("Identifier: " + string); 
+                                    }
+                                  }
+"[a-z][a-zA-Z]+"                 { String string = yytext();
+                                   if (string.toLowerCase().equals("true") ||
+                                       string.toLowerCase().equals("false")) {
+      
+                                       System.out.println("Keyword: " + string.toLowerCase());
+                                   }
+                                   else {
+    
+                                       System.out.println("Identifier: " + string);
+                                   }
+                                 }
+
+"[+-*/~<=(){}]"                   { System.out.println("Special: " + yytext()); }
+"[<=]"                            { System.out.println("Special: " + yytext()); }
+
+"\"[.]*\""                        { System.out.println("String: " + yytext()); }
+
+"--[.]\n"                       { System.out.println("Comment: " + yytext()); }
+"\*[.]\*"                           { System.out.prinn("Comment: " + yytext()); }
+
+"[ \n\f\r\t\v]+"           { System.out.println("Whitespace: " + yytext()); }
 
 .                               { /* This rule should be the very last
                                      in your lexical specification and

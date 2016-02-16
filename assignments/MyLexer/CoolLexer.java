@@ -20,6 +20,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
  *  lexer actions should go here.  Don't remove or modify anything that
  *  was there initially.  */
     // Max size of string constants
+    // initial
     static int MAX_STR_CONST = 1025;
     // For assembling string constants
     StringBuffer string_buf = new StringBuffer();
@@ -222,16 +223,32 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 1 */ YY_NO_ANCHOR,
 		/* 2 */ YY_NO_ANCHOR,
 		/* 3 */ YY_NO_ANCHOR,
-		/* 4 */ YY_NO_ANCHOR
+		/* 4 */ YY_NO_ANCHOR,
+		/* 5 */ YY_NO_ANCHOR,
+		/* 6 */ YY_NO_ANCHOR,
+		/* 7 */ YY_NO_ANCHOR,
+		/* 8 */ YY_NO_ANCHOR,
+		/* 9 */ YY_NO_ANCHOR,
+		/* 10 */ YY_NO_ANCHOR,
+		/* 11 */ YY_NOT_ACCEPT,
+		/* 12 */ YY_NO_ANCHOR,
+		/* 13 */ YY_NO_ANCHOR,
+		/* 14 */ YY_NOT_ACCEPT,
+		/* 15 */ YY_NO_ANCHOR,
+		/* 16 */ YY_NOT_ACCEPT,
+		/* 17 */ YY_NO_ANCHOR,
+		/* 18 */ YY_NOT_ACCEPT
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"3:10,0,3:2,0,3:47,1,2,3:65,4:2")[0];
+"12:9,11,9,12,11:2,12:18,11,12,6,12:5,5:2,10,5,12,8,7,5,1:10,12:2,5:2,12:3,3" +
+":26,12:4,4,12,2:26,5,12,5:2,12,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,5,
-"0,1,2:3")[0];
+	private int yy_rmap[] = unpackFromString(1,19,
+"0,1,2,3,1,4,1,3,1:3,4,5,1,6,7,8,9,10")[0];
 
-	private int yy_nxt[][] = unpackFromString(3,5,
-"-1,1,4:2,2,-1:2,3,-1:7");
+	private int yy_nxt[][] = unpackFromString(11,13,
+"1,2,3,12:2,4,5,13,15,6,17,6,13,-1:14,2,12:3,-1:9,12,7:2,12,-1:14,8,11,-1:6," +
+"12:4,-1:15,18,-1:13,14,-1:14,9,-1:9,16,-1:14,10,-1:3");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -295,31 +312,147 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					yy_to_mark();
 					switch (yy_last_accept_state) {
 					case 1:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+						
 					case -2:
 						break;
 					case 2:
-						
+						{ System.out.println("Integer: " + yytext()); }
 					case -3:
 						break;
 					case 3:
-						{ /* Sample lexical rule for "=>" arrow.
-                                     Further lexical rules should be defined
-                                     here, after the last %% separator */
-                                  return new Symbol(TokenConstants.DARROW); }
+						{ String token = yytext();
+                                    if (token.toLowerCase().equals("class") ||
+                                        token.toLowerCase().equals("esle") ||
+                                        token.toLowerCase().equals("fi") ||
+                                        token.toLowerCase().equals("if") ||
+                                        token.toLowerCase().equals("in") ||
+                                        token.toLowerCase().equals("inherits") ||
+                                        token.toLowerCase().equals("isvoid") ||
+                                        token.toLowerCase().equals("let") ||
+                                        token.toLowerCase().equals("loop") ||
+                                        token.toLowerCase().equals("pool") ||
+                                        token.toLowerCase().equals("then") ||
+                                        token.toLowerCase().equals("while") ||
+                                        token.toLowerCase().equals("case") ||
+                                        token.toLowerCase().equals("esac") ||
+                                        token.toLowerCase().equals("new") ||
+                                        token.toLowerCase().equals("of") ||
+                                        token.toLowerCase().equals("not")) {
+				        System.out.println("Keyword: " + token.toLowerCase());
+		                    }
+                                    else {
+				        System.out.println("Identifier: " + token); 
+                                    }
+                                  }
 					case -4:
 						break;
 					case 4:
+						{ System.out.println("Special: " + yytext()); }
+					case -5:
+						break;
+					case 5:
 						{ /* This rule should be the very last
                                      in your lexical specification and
                                      will match match everything not
                                      matched by other lexical rules. */
                                   System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
-					case -5:
+					case -6:
+						break;
+					case 6:
+						{ String token = yytext();
+                                 String classifier = "Whitespace: ";
+                                 String type;
+                                 if (token.equals(" ")) {
+				     type = " ";
+				 }
+				 else {
+				     char escape = token.charAt(0);
+                                     switch (escape) {
+				         case '\n': type = "\\n";break;
+				         case '\f': type = "\\f";break;
+				         case '\r': type = "\\r";break;
+				         case '\t': type = "\\t";break;
+                                         default: type = "\\v";
+                                     }
+				 }
+                                 System.out.println(classifier + type);
+                               }
+					case -7:
+						break;
+					case 7:
+						{ String token = yytext();
+                                   if (token.toLowerCase().equals("true") ||
+                                       token.toLowerCase().equals("false")) {
+                                       System.out.println("Keyword: " + token.toLowerCase());
+                                   }
+                                   else {
+                                       System.out.println("Identifier: " + token);
+                                   }
+                                 }
+					case -8:
+						break;
+					case 8:
+						{ System.out.println("String: " + yytext()); }
+					case -9:
+						break;
+					case 9:
+						{ System.out.println("Comment: " + yytext()); }
+					case -10:
+						break;
+					case 10:
+						{ System.out.println("Comment: " + yytext()); }
+					case -11:
+						break;
+					case 12:
+						{ String token = yytext();
+                                    if (token.toLowerCase().equals("class") ||
+                                        token.toLowerCase().equals("esle") ||
+                                        token.toLowerCase().equals("fi") ||
+                                        token.toLowerCase().equals("if") ||
+                                        token.toLowerCase().equals("in") ||
+                                        token.toLowerCase().equals("inherits") ||
+                                        token.toLowerCase().equals("isvoid") ||
+                                        token.toLowerCase().equals("let") ||
+                                        token.toLowerCase().equals("loop") ||
+                                        token.toLowerCase().equals("pool") ||
+                                        token.toLowerCase().equals("then") ||
+                                        token.toLowerCase().equals("while") ||
+                                        token.toLowerCase().equals("case") ||
+                                        token.toLowerCase().equals("esac") ||
+                                        token.toLowerCase().equals("new") ||
+                                        token.toLowerCase().equals("of") ||
+                                        token.toLowerCase().equals("not")) {
+				        System.out.println("Keyword: " + token.toLowerCase());
+		                    }
+                                    else {
+				        System.out.println("Identifier: " + token); 
+                                    }
+                                  }
+					case -12:
+						break;
+					case 13:
+						{ /* This rule should be the very last
+                                     in your lexical specification and
+                                     will match match everything not
+                                     matched by other lexical rules. */
+                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case -13:
+						break;
+					case 15:
+						{ /* This rule should be the very last
+                                     in your lexical specification and
+                                     will match match everything not
+                                     matched by other lexical rules. */
+                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case -14:
+						break;
+					case 17:
+						{ /* This rule should be the very last
+                                     in your lexical specification and
+                                     will match match everything not
+                                     matched by other lexical rules. */
+                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+					case -15:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

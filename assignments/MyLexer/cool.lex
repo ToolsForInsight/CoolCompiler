@@ -69,59 +69,81 @@ import java_cup.runtime.Symbol;
 
 %class CoolLexer
 %cup
+%notunix
 
 %%
 
-<YYINITIAL>"=>"			{ /* Sample lexical rule for "=>" arrow.
-                                     Further lexical rules should be defined
-                                     here, after the last %% separator */
-                                  return new Symbol(TokenConstants.DARROW); }
+[0-9]+                          { System.out.println("Integer: " + yytext()); }          
 
-// Integers
-// integers are non-empty strings of digits 0-9
+[a-z][a-zA-Z]+                 { String token = yytext();
+                                   if (token.toLowerCase().equals("true") ||
+                                       token.toLowerCase().equals("false")) {
+      
+                                       System.out.println("Keyword: " + token.toLowerCase());
+                                   }
+                                   else {
+    
+                                       System.out.println("Identifier: " + token);
+                                   }
+                                 }
+[a-zA-Z_0-9]+[a-zA-Z_]*         { String token = yytext();
 
-// Identifiers
-// identifiers are strings (other than keywords) consisting of letters, digits, and the
-// underscore character
-    // type identifiers begin with a capital letter
-    // object identifiers begin with a lowercase letter
-    // self is a special identifier but not a keyword
-    // SELF_TYPE is a special identifier but not a keyword
+                                    if (token.toLowerCase().equals("class") ||
+                                        token.toLowerCase().equals("esle") ||
+                                        token.toLowerCase().equals("fi") ||
+                                        token.toLowerCase().equals("if") ||
+                                        token.toLowerCase().equals("in") ||
+                                        token.toLowerCase().equals("inherits") ||
+                                        token.toLowerCase().equals("isvoid") ||
+                                        token.toLowerCase().equals("let") ||
+                                        token.toLowerCase().equals("loop") ||
+                                        token.toLowerCase().equals("pool") ||
+                                        token.toLowerCase().equals("then") ||
+                                        token.toLowerCase().equals("while") ||
+                                        token.toLowerCase().equals("case") ||
+                                        token.toLowerCase().equals("esac") ||
+                                        token.toLowerCase().equals("new") ||
+                                        token.toLowerCase().equals("of") ||
+                                        token.toLowerCase().equals("not")) {
 
-// Special Syntactic Symbols
-// special syntactic sybmbols include: +, -, *, /, ~, <, <=, =, (, ), {, }
-// [note to self: <-]
+				        System.out.println("Keyword: " + token.toLowerCase());
+		                    }
+                                    else {
+                                        
+				        System.out.println("Identifier: " + token); 
+                                    }
+                                  }
 
-// Strings
-// strings are enclosed in double quotes "..."
-    // within a string, a sequence "\c" denotes the character "c". exceptions:
-        // \b backspace
-        // \t tab
-        // \n newline
-        // \f formfeed
-    // a non-escaped newline character may not appear in a string (needs backslash)
-    // a string may not contain EOF
-    // a string may not contain the null (character \0)
-    // any other character may be included in a string
-    // strings cannot cross file boundaries
+[+-*/~<=(){}]                   { System.out.println("Special: " + yytext()); }
+[<=]                            { System.out.println("Special: " + yytext()); }
 
-// Comments
-// comments are either 1) any characters between two dashes "--" and the next newline
-// (or EOF, if there is no next newline) or 2) any characters between two asterisks
-// (*...*).  
-    // The latter form of comment may be nested.
-    // Comments cannot cross file boundaries.
+\"[.]*\"                        { System.out.println("String: " + yytext()); }
 
-// Keywords
-// Cool keywords are: class, else, false, fi, if, in, inherits, isvoid, let, loop, pool,
-// then, while, case, esac, new, of, not, true.
-    // all keywords except for "true" and "false" are case INsensitive.
-    // the first letter of "true" and "false" must be lowercase.
+--[.]\n                         { System.out.println("Comment: " + yytext()); }
+\*[.]\*                         { System.out.println("Comment: " + yytext()); }
 
-// White space
-// white space consists of any sequence of the characters: blank (ascii 32), \n (newline,
-// ascii 10), \f (form feed, ascii 12), \r (carriage return, ascii 13), \t (tab, ascii 9),
-// \v (vertical tab, ascii 11).
+[" "\n\f\r\t\v]                { String token = yytext();
+                                 String classifier = "Whitespace: ";
+                                 String type;
+
+                                 if (token.equals(" ")) {
+                                 
+				     type = " ";
+				 }
+				 else {
+                                    
+				     char escape = token.charAt(0);
+
+                                     switch (escape) {
+				         case '\n': type = "\\n";break;
+				         case '\f': type = "\\f";break;
+				         case '\r': type = "\\r";break;
+				         case '\t': type = "\\t";break;
+                                         default: type = "\\v";
+                                     }
+				 }
+                                 System.out.println(classifier + type);
+                               }
 
 .                               { /* This rule should be the very last
                                      in your lexical specification and
