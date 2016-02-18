@@ -28,6 +28,10 @@ class CoolLexer implements java_cup.runtime.Scanner {
     int lookBackIter = 1;
     int numEscs;
     boolean containsNullChar = false;
+    boolean eofInString = true;
+    // For dealing with comments
+    StringBuffer comment_buf;
+    int numNestComnts = 0;
     private int curr_lineno = 1;
     int get_curr_lineno() {
 	return curr_lineno;
@@ -66,6 +70,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	currChar = stringBuffer.charAt(charPos);
         if (currChar == '\0') {
           containsNullChar = true;
+	  return "";
 	}
 	else if (currChar == '\\') {
 	  nextChar = stringBuffer.charAt(charPos+1);
@@ -142,11 +147,11 @@ class CoolLexer implements java_cup.runtime.Scanner {
 	private boolean yy_eof_done = false;
 	private final int STRING = 1;
 	private final int YYINITIAL = 0;
-	private final int STRESC = 2;
+	private final int COMMENT = 2;
 	private final int yy_state_dtrans[] = {
 		0,
-		13,
-		18
+		17,
+		20
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -314,25 +319,28 @@ class CoolLexer implements java_cup.runtime.Scanner {
 		/* 12 */ YY_NO_ANCHOR,
 		/* 13 */ YY_NO_ANCHOR,
 		/* 14 */ YY_NO_ANCHOR,
-		/* 15 */ YY_NOT_ACCEPT,
+		/* 15 */ YY_NO_ANCHOR,
 		/* 16 */ YY_NO_ANCHOR,
-		/* 17 */ YY_NO_ANCHOR,
-		/* 18 */ YY_NOT_ACCEPT,
+		/* 17 */ YY_NOT_ACCEPT,
+		/* 18 */ YY_NO_ANCHOR,
 		/* 19 */ YY_NO_ANCHOR,
-		/* 20 */ YY_NO_ANCHOR,
-		/* 21 */ YY_NO_ANCHOR
+		/* 20 */ YY_NOT_ACCEPT,
+		/* 21 */ YY_NO_ANCHOR,
+		/* 22 */ YY_NO_ANCHOR,
+		/* 23 */ YY_NO_ANCHOR,
+		/* 24 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"11:9,14,12,11,14,10,11:18,14,11,9,11:5,4:2,13,4:2,8,4:2,1:10,4:2,7,5,6,11,4" +
-",2:26,11:4,3,11,2:26,4,11,4:2,11,0:2")[0];
+"11:9,16,12,11,16,10,11:18,16,11,9,11:5,13,15,14,4:2,8,4:2,1:10,4:2,7,5,6,11" +
+",4,2:26,11:4,3,11,2:26,4,11,4:2,11,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,22,
-"0,1,2,3,1:7,4,5,6,1,5,7,8,9,10,11,5")[0];
+	private int yy_rmap[] = unpackFromString(1,25,
+"0,1,2,3,1:7,4,1:5,5,6,7,8,9,10,11,7")[0];
 
-	private int yy_nxt[][] = unpackFromString(12,15,
-"1,2,3,4,5,16,4,19,20,6,7,4,7,21,7,-1:16,2,-1:14,3:3,-1:12,11:9,-1,11,-1,11:" +
-"2,-1,15:9,-1,15,-1,12,15,1,17:8,14,17:2,14,17:2,-1:6,8,-1:9,17:8,-1,17:2,-1" +
-",17:2,1,-1:19,9,-1:2,10,-1:14,11,-1:6");
+	private int yy_nxt[][] = unpackFromString(12,17,
+"1,2,3,4,5,18,4,21,23,6,7,4,7,24,5:2,7,-1:18,2,-1:16,3:3,-1:14,11:9,-1,11,-1" +
+",11:4,1,13:8,14,13:2,14,13:4,-1:6,8,-1:24,12,-1:2,1,15:9,-1,15:2,19,22,15:2" +
+",-1:5,9,-1:2,10,-1:23,16,-1:9,11,-1:8");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -364,16 +372,14 @@ class CoolLexer implements java_cup.runtime.Scanner {
  *  Ultimately, you should return the EOF symbol, or your lexer won't
  *  work.  */
     switch(yy_lexical_state) {
-    case YYINITIAL:
-	/* nothing special to do in the initial state */
-	break;
-	/* If necessary, add code for other states here, e.g:
-	   case COMMENT:
-	   ...
-	   break;
-	*/
-    case STRING:
-      break;
+      case YYINITIAL:
+        break;
+      case STRING:
+	yybegin(YYINITIAL);
+        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains EOF"));
+      case COMMENT:
+        yybegin(YYINITIAL);
+        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Comment contains EOF"));
     }
     return new Symbol(TokenConstants.EOF);
 			}
@@ -474,7 +480,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -4:
 						break;
 					case 4:
-						{ return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("LEXER BUG - UNMATCHED: " + yytext())); }
+						{ return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString(yytext())); }
 					case -5:
 						break;
 					case 5:
@@ -531,7 +537,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -6:
 						break;
 					case 6:
-						{ System.out.println("entered string literal");
+						{ //System.out.println("entered string literal");
                                   string_buf = new StringBuffer();
                                   yybegin(STRING); }
 					case -7:
@@ -576,18 +582,19 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -12:
 						break;
 					case 12:
-						{ String token = yytext();
-                                  String comment = token.substring(1, token.length()-2); }
+						{ comment_buf = new StringBuffer();
+                                  numNestComnts++;
+                                  yybegin(COMMENT); }
 					case -13:
 						break;
 					case 13:
-						{ System.out.println("appending char: " + yytext()); 
+						{ //System.out.println("appending char: " + yytext());
                                   string_buf.append(yytext()); //needs EOF
                                 }
 					case -14:
 						break;
 					case 14:
-						{ System.out.println("encountered newline or quote; looking back");
+						{ //System.out.println("encountered newline or quote; looking back");
                                   char token = yytext().charAt(0);
                                   boolean empty = string_buf.length() == 0;
                                   if (!empty) {
@@ -595,7 +602,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
                                     lookBackStrBuf();
 				  }
                                   if (numEscs % 2 == 1) {
-				    System.out.println("Escapes is " + numEscs + " so appending char");
+				    //System.out.println("Escapes is " + numEscs + " so appending char");
 				      if (token == '\n') {
 					curr_lineno++;
 				      }
@@ -605,15 +612,15 @@ class CoolLexer implements java_cup.runtime.Scanner {
 				    yybegin(YYINITIAL);
 				    if (token == '\n') {
                                       curr_lineno++;
-                                      System.out.println("Escapes is " + numEscs + " so newline not escaped");
+                                      //System.out.println("Escapes is " + numEscs + " so newline not escaped");
                                       return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Unterminated string constant"));
 				    }
 				    else  if (token == '"') {
-                                      System.out.println("Reached end; building string literal");
+                                      //System.out.println("Reached end; building string literal");
                                       containsNullChar = false;
                                       String stringConstant = buildString(string_buf);
-                                      if (containsNullChar) {
-                                        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
+				      if (containsNullChar) {
+					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
 				      }
                                       return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(stringConstant));
 				    }
@@ -621,66 +628,19 @@ class CoolLexer implements java_cup.runtime.Scanner {
                                 }
 					case -15:
 						break;
-					case 16:
-						{ String token = yytext();
-                                 if (token.equals("+")) {
-				   return new Symbol(TokenConstants.PLUS); 
-                                 }
-			         else if (token.equals("-")) {
-		         	    return new Symbol(TokenConstants.MINUS); 
-				  }
-                                  else if (token.equals("*")) {
-				    return new Symbol(TokenConstants.MULT); 
-				  }
-                                  else if (token.equals("/")) {
-				    return new Symbol(TokenConstants.DIV); 
-				  }
-                                  else if (token.equals("<")) {
-				    return new Symbol(TokenConstants.LT); 
-			          }
-                                  else if (token.equals("=")) {
-				    return new Symbol(TokenConstants.EQ); 
-				  }
-                                  else if (token.equals("(")) {
-				    return new Symbol(TokenConstants.LPAREN); 
-				  }
-                                  else if (token.equals(")")) {
-				    return new Symbol(TokenConstants.RPAREN); 
-				  }
-				  else if (token.equals("{")) {
-				    return new Symbol(TokenConstants.LBRACE); 
-				  }
-                                  else if (token.equals("}")) {
-				    return new Symbol(TokenConstants.RBRACE); 
-				  }
-                                  else if (token.equals(".")) {
-				    return new Symbol(TokenConstants.DOT); 
-				  }
-				  else if (token.equals("~")) {
-				    return new Symbol(TokenConstants.NEG); 
-				  }		
-		                  else if (token.equals(";")) {
-				    return new Symbol(TokenConstants.SEMI); 
-				  }
-		                  else if (token.equals("@")) {
-				    return new Symbol(TokenConstants.AT); 
-				  }
-		                  else if (token.equals(",")) {
-				    return new Symbol(TokenConstants.COMMA); 
-				  }
-		                  else {
-				    return new Symbol(TokenConstants.COLON); 
-				  }
-                                }
+					case 15:
+						{ ; }
 					case -16:
 						break;
-					case 17:
-						{ System.out.println("appending char: " + yytext()); 
-                                  string_buf.append(yytext()); //needs EOF
+					case 16:
+						{ numNestComnts--;
+                                  if (numNestComnts == 0) {
+				    yybegin(YYINITIAL);
+                                  }
                                 }
 					case -17:
 						break;
-					case 19:
+					case 18:
 						{ String token = yytext();
                                  if (token.equals("+")) {
 				   return new Symbol(TokenConstants.PLUS); 
@@ -733,57 +693,8 @@ class CoolLexer implements java_cup.runtime.Scanner {
                                 }
 					case -18:
 						break;
-					case 20:
-						{ String token = yytext();
-                                 if (token.equals("+")) {
-				   return new Symbol(TokenConstants.PLUS); 
-                                 }
-			         else if (token.equals("-")) {
-		         	    return new Symbol(TokenConstants.MINUS); 
-				  }
-                                  else if (token.equals("*")) {
-				    return new Symbol(TokenConstants.MULT); 
-				  }
-                                  else if (token.equals("/")) {
-				    return new Symbol(TokenConstants.DIV); 
-				  }
-                                  else if (token.equals("<")) {
-				    return new Symbol(TokenConstants.LT); 
-			          }
-                                  else if (token.equals("=")) {
-				    return new Symbol(TokenConstants.EQ); 
-				  }
-                                  else if (token.equals("(")) {
-				    return new Symbol(TokenConstants.LPAREN); 
-				  }
-                                  else if (token.equals(")")) {
-				    return new Symbol(TokenConstants.RPAREN); 
-				  }
-				  else if (token.equals("{")) {
-				    return new Symbol(TokenConstants.LBRACE); 
-				  }
-                                  else if (token.equals("}")) {
-				    return new Symbol(TokenConstants.RBRACE); 
-				  }
-                                  else if (token.equals(".")) {
-				    return new Symbol(TokenConstants.DOT); 
-				  }
-				  else if (token.equals("~")) {
-				    return new Symbol(TokenConstants.NEG); 
-				  }		
-		                  else if (token.equals(";")) {
-				    return new Symbol(TokenConstants.SEMI); 
-				  }
-		                  else if (token.equals("@")) {
-				    return new Symbol(TokenConstants.AT); 
-				  }
-		                  else if (token.equals(",")) {
-				    return new Symbol(TokenConstants.COMMA); 
-				  }
-		                  else {
-				    return new Symbol(TokenConstants.COLON); 
-				  }
-                                }
+					case 19:
+						{ ; }
 					case -19:
 						break;
 					case 21:
@@ -838,6 +749,116 @@ class CoolLexer implements java_cup.runtime.Scanner {
 				  }
                                 }
 					case -20:
+						break;
+					case 22:
+						{ ; }
+					case -21:
+						break;
+					case 23:
+						{ String token = yytext();
+                                 if (token.equals("+")) {
+				   return new Symbol(TokenConstants.PLUS); 
+                                 }
+			         else if (token.equals("-")) {
+		         	    return new Symbol(TokenConstants.MINUS); 
+				  }
+                                  else if (token.equals("*")) {
+				    return new Symbol(TokenConstants.MULT); 
+				  }
+                                  else if (token.equals("/")) {
+				    return new Symbol(TokenConstants.DIV); 
+				  }
+                                  else if (token.equals("<")) {
+				    return new Symbol(TokenConstants.LT); 
+			          }
+                                  else if (token.equals("=")) {
+				    return new Symbol(TokenConstants.EQ); 
+				  }
+                                  else if (token.equals("(")) {
+				    return new Symbol(TokenConstants.LPAREN); 
+				  }
+                                  else if (token.equals(")")) {
+				    return new Symbol(TokenConstants.RPAREN); 
+				  }
+				  else if (token.equals("{")) {
+				    return new Symbol(TokenConstants.LBRACE); 
+				  }
+                                  else if (token.equals("}")) {
+				    return new Symbol(TokenConstants.RBRACE); 
+				  }
+                                  else if (token.equals(".")) {
+				    return new Symbol(TokenConstants.DOT); 
+				  }
+				  else if (token.equals("~")) {
+				    return new Symbol(TokenConstants.NEG); 
+				  }		
+		                  else if (token.equals(";")) {
+				    return new Symbol(TokenConstants.SEMI); 
+				  }
+		                  else if (token.equals("@")) {
+				    return new Symbol(TokenConstants.AT); 
+				  }
+		                  else if (token.equals(",")) {
+				    return new Symbol(TokenConstants.COMMA); 
+				  }
+		                  else {
+				    return new Symbol(TokenConstants.COLON); 
+				  }
+                                }
+					case -22:
+						break;
+					case 24:
+						{ String token = yytext();
+                                 if (token.equals("+")) {
+				   return new Symbol(TokenConstants.PLUS); 
+                                 }
+			         else if (token.equals("-")) {
+		         	    return new Symbol(TokenConstants.MINUS); 
+				  }
+                                  else if (token.equals("*")) {
+				    return new Symbol(TokenConstants.MULT); 
+				  }
+                                  else if (token.equals("/")) {
+				    return new Symbol(TokenConstants.DIV); 
+				  }
+                                  else if (token.equals("<")) {
+				    return new Symbol(TokenConstants.LT); 
+			          }
+                                  else if (token.equals("=")) {
+				    return new Symbol(TokenConstants.EQ); 
+				  }
+                                  else if (token.equals("(")) {
+				    return new Symbol(TokenConstants.LPAREN); 
+				  }
+                                  else if (token.equals(")")) {
+				    return new Symbol(TokenConstants.RPAREN); 
+				  }
+				  else if (token.equals("{")) {
+				    return new Symbol(TokenConstants.LBRACE); 
+				  }
+                                  else if (token.equals("}")) {
+				    return new Symbol(TokenConstants.RBRACE); 
+				  }
+                                  else if (token.equals(".")) {
+				    return new Symbol(TokenConstants.DOT); 
+				  }
+				  else if (token.equals("~")) {
+				    return new Symbol(TokenConstants.NEG); 
+				  }		
+		                  else if (token.equals(";")) {
+				    return new Symbol(TokenConstants.SEMI); 
+				  }
+		                  else if (token.equals("@")) {
+				    return new Symbol(TokenConstants.AT); 
+				  }
+		                  else if (token.equals(",")) {
+				    return new Symbol(TokenConstants.COMMA); 
+				  }
+		                  else {
+				    return new Symbol(TokenConstants.COLON); 
+				  }
+                                }
+					case -23:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

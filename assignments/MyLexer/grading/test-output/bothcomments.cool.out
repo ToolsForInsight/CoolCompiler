@@ -7,8 +7,6 @@ OBJECTID was
 '*'
 ')'
 '.'
-'('
-')'
 IF
 INT_CONST 5
 THEN

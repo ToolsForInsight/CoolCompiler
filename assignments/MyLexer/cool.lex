@@ -23,6 +23,11 @@ import java_cup.runtime.Symbol;
     int lookBackIter = 1;
     int numEscs;
     boolean containsNullChar = false;
+    boolean eofInString = true;
+
+    // For dealing with comments
+    StringBuffer comment_buf;
+    int numNestComnts = 0;
 
     private int curr_lineno = 1;
     int get_curr_lineno() {
@@ -73,6 +78,7 @@ import java_cup.runtime.Symbol;
 	
         if (currChar == '\0') {
           containsNullChar = true;
+	  return "";
 	}
 	else if (currChar == '\\') {
 
@@ -119,7 +125,7 @@ import java_cup.runtime.Symbol;
     // empty for now
 %init}
 
-%state STRING, STRESC
+%state STRING, COMMENT
 
 %eofval{
 
@@ -131,16 +137,14 @@ import java_cup.runtime.Symbol;
  *  work.  */
 
     switch(yy_lexical_state) {
-    case YYINITIAL:
-	/* nothing special to do in the initial state */
-	break;
-	/* If necessary, add code for other states here, e.g:
-	   case COMMENT:
-	   ...
-	   break;
-	*/
-    case STRING:
-      break;
+      case YYINITIAL:
+        break;
+      case STRING:
+	yybegin(YYINITIAL);
+        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains EOF"));
+      case COMMENT:
+        yybegin(YYINITIAL);
+        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Comment contains EOF"));
     }
     return new Symbol(TokenConstants.EOF);
 %eofval}
@@ -280,15 +284,15 @@ import java_cup.runtime.Symbol;
 
 <YYINITIAL>(<=)                 { return new Symbol(TokenConstants.LE); }
 
-<YYINITIAL>\"                   { System.out.println("entered string literal");
+<YYINITIAL>\"                   { //System.out.println("entered string literal");
                                   string_buf = new StringBuffer();
                                   yybegin(STRING); }
 
-<STRING>([^\n\0\"]|\0)*            { System.out.println("appending char: " + yytext()); 
+<STRING>([^\n\0\"]|\0)          { //System.out.println("appending char: " + yytext());
                                   string_buf.append(yytext()); //needs EOF
                                 }
 
-<STRING>\n|\"                  { System.out.println("encountered newline or quote; looking back");
+<STRING>\n|\"                  { //System.out.println("encountered newline or quote; looking back");
                                   
                                   char token = yytext().charAt(0);
                                   boolean empty = string_buf.length() == 0;
@@ -300,7 +304,7 @@ import java_cup.runtime.Symbol;
 				  }
 
                                   if (numEscs % 2 == 1) {
-				    System.out.println("Escapes is " + numEscs + " so appending char");
+				    //System.out.println("Escapes is " + numEscs + " so appending char");
 
 				      if (token == '\n') {
 					curr_lineno++;
@@ -312,15 +316,15 @@ import java_cup.runtime.Symbol;
 
 				    if (token == '\n') {
                                       curr_lineno++;
-                                      System.out.println("Escapes is " + numEscs + " so newline not escaped");
+                                      //System.out.println("Escapes is " + numEscs + " so newline not escaped");
                                       return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Unterminated string constant"));
 				    }
 				    else  if (token == '"') {
-                                      System.out.println("Reached end; building string literal");
+                                      //System.out.println("Reached end; building string literal");
                                       containsNullChar = false;
                                       String stringConstant = buildString(string_buf);
-                                      if (containsNullChar) {
-                                        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
+				      if (containsNullChar) {
+					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
 				      }
                                       return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(stringConstant));
 				    }
@@ -330,8 +334,17 @@ import java_cup.runtime.Symbol;
 <YYINITIAL>--.*                 { String token = yytext();
 				  String comment = token.substring(2, token.length()-1); }
 
-<YYINITIAL>\*.*\*               { String token = yytext();
-                                  String comment = token.substring(1, token.length()-2); }
+<YYINITIAL,COMMENT>\(\*         { comment_buf = new StringBuffer();
+                                  numNestComnts++;
+                                  yybegin(COMMENT); }
+
+<COMMENT>\*\)                   { numNestComnts--;
+                                  if (numNestComnts == 0) {
+				    yybegin(YYINITIAL);
+                                  }
+                                }
+
+<COMMENT>(.|\n)                 { ; }
 
 <YYINITIAL>[" "\n\f\r\t\v]      { String token = yytext();
                                   String whitespaceType;
@@ -357,4 +370,4 @@ import java_cup.runtime.Symbol;
 				  }
                                }
 
-<YYINITIAL>.                   { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("LEXER BUG - UNMATCHED: " + yytext())); }
+<YYINITIAL>.                   { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString(yytext())); }

@@ -1,20 +1,8 @@
 #name "./s04.test.cool"
-#1 '('
-#1 ')'
 #2 INT_CONST 0
-#3 '('
-#3 ')'
 #4 INT_CONST 1
-#5 '('
-#5 ')'
 #6 INT_CONST 2
-#7 '('
-#7 ')'
 #8 INT_CONST 3
-#9 '('
-#9 ')'
 #10 INT_CONST 4
-#11 ERROR "LEXER BUG - UNMATCHED: \013"
-#11 '('
-#11 ')'
+#11 ERROR "\013"
 #12 INT_CONST 5

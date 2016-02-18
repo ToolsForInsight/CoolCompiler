@@ -1,4 +1,4 @@
-'('
+STR_CONST "(*"
+'*'
 ')'
-'('
-LONGERROR
+STR_CONST "*)(*"
