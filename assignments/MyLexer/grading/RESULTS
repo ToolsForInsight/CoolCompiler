@@ -1,12 +1,1 @@
-	-1 (bothcomments)	 mixing the two types of comments
-	-1 (endcomment)	 the end comment token by itself
-	-1 (escapednull)	 escaped null char in a string
-	-1 (lineno2)	 line number test 2
-	-1 (lineno3)	 line number test 3
-	-1 (longcomment)	 a long comment test [submission crashed on this input]
-	-1 (longstring_escapedbackslashes)	 long strings with escaped characters
-	-1 (pathologicalstrings)	 some pathological strings
-	-1 (s04)	 different types of whitespaces
-	-1 (s32)	 end of comment without start
-	-1 (weirdcharcomment)	 various binary characters in a comment [submission crashed on this input]
-	-1 (wq0607-c2)	 sequences of block comments and strings
+	(our tests)	Passed all tests -- congratulations!

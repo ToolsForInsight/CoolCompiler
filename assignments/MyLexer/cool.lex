@@ -28,6 +28,9 @@ import java_cup.runtime.Symbol;
     // For dealing with comments
     StringBuffer comment_buf;
     int numNestComnts = 0;
+    int currCmntType;
+    static int NESTED = 1;
+    static int REGULAR = 0; 
 
     private int curr_lineno = 1;
     int get_curr_lineno() {
@@ -84,8 +87,12 @@ import java_cup.runtime.Symbol;
 
 	  nextChar = stringBuffer.charAt(charPos+1);
 	  
-	  if (nextChar == 'b' || nextChar == 'f' ||
-	      nextChar == 'n' || nextChar == 't') {
+	  if (nextChar == '\0') {
+	    containsNullChar = true;
+	    return "";
+	  }
+	  else if (nextChar == 'b' || nextChar == 'f' ||
+	           nextChar == 'n' || nextChar == 't') {
 
 	    switch (nextChar) {
 	      case 'b': specialChar = '\b'; break;
@@ -143,8 +150,11 @@ import java_cup.runtime.Symbol;
 	yybegin(YYINITIAL);
         return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains EOF"));
       case COMMENT:
-        yybegin(YYINITIAL);
-        return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Comment contains EOF"));
+	if (currCmntType == NESTED) {
+          yybegin(YYINITIAL);
+          return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Comment contains EOF"));
+	}
+	break;
     }
     return new Symbol(TokenConstants.EOF);
 %eofval}
@@ -324,29 +334,61 @@ import java_cup.runtime.Symbol;
                                       containsNullChar = false;
                                       String stringConstant = buildString(string_buf);
 				      if (containsNullChar) {
-					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
+					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String constant contains null character"));
+				      }
+				      else if (stringConstant.length() > 1024) {
+					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String constant too long"));
 				      }
                                       return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(stringConstant));
 				    }
 				  }
                                 }                   
 
-<YYINITIAL>--.*                 { String token = yytext();
-				  String comment = token.substring(2, token.length()-1); }
+<YYINITIAL>--                   { comment_buf = new StringBuffer();
+                                  currCmntType = REGULAR;
+                                  yybegin(COMMENT);
+                                }
 
-<YYINITIAL,COMMENT>\(\*         { comment_buf = new StringBuffer();
-                                  numNestComnts++;
-                                  yybegin(COMMENT); }
+<YYINITIAL,COMMENT>\(\*         { if (yy_lexical_state == COMMENT &&
+                                      currCmntType == REGULAR) {
 
-<COMMENT>\*\)                   { numNestComnts--;
-                                  if (numNestComnts == 0) {
-				    yybegin(YYINITIAL);
+                                    comment_buf.append(yytext());
+                                  }
+                                  else {
+                                    comment_buf = new StringBuffer();
+                                    numNestComnts++;
+                                    currCmntType = NESTED;
+                                    yybegin(COMMENT); 
                                   }
                                 }
 
-<COMMENT>(.|\n)                 { ; }
+<COMMENT>\*\)                   { if (currCmntType == NESTED) {
 
-<YYINITIAL>[" "\n\f\r\t\v]      { String token = yytext();
+                                    numNestComnts--;
+                                    
+                                    if (numNestComnts == 0) {
+				      yybegin(YYINITIAL);
+                                    }
+                                  }
+                                  else {
+				    comment_buf.append(yytext());
+                                  }
+                                }
+
+<COMMENT>(.|\n|\r)              { char token = yytext().charAt(0);
+                                  comment_buf.append(token);
+
+                                  if (token == '\n' | token == '\r') {
+				    curr_lineno++;
+				    if (currCmntType == REGULAR) {
+				      yybegin(YYINITIAL);
+				    }
+				  }
+                                }
+
+<YYINITIAL>\*\)                 { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Unmatched *)")); }
+
+<YYINITIAL>[" "\n\f\r\t\x0b]    { String token = yytext();
                                   String whitespaceType;
 
                                   if (token.equals(" ")) {

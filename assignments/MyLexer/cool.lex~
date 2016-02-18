@@ -25,6 +25,10 @@ import java_cup.runtime.Symbol;
     boolean containsNullChar = false;
     boolean eofInString = true;
 
+    // For dealing with comments
+    StringBuffer comment_buf;
+    int numNestComnts = 0;
+
     private int curr_lineno = 1;
     int get_curr_lineno() {
 	return curr_lineno;
@@ -319,8 +323,8 @@ import java_cup.runtime.Symbol;
                                       //System.out.println("Reached end; building string literal");
                                       containsNullChar = false;
                                       String stringConstant = buildString(string_buf);
-				      if (containsNullChar = true) {
-					return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString("String contains null character"));
+				      if (containsNullChar) {
+					return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String contains null character"));
 				      }
                                       return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(stringConstant));
 				    }
@@ -330,9 +334,17 @@ import java_cup.runtime.Symbol;
 <YYINITIAL>--.*                 { String token = yytext();
 				  String comment = token.substring(2, token.length()-1); }
 
-<YYINITIAL>\(\*                 { yybegin(COMMENT); }
+<YYINITIAL,COMMENT>\(\*         { comment_buf = new StringBuffer();
+                                  numNestComnts++;
+                                  yybegin(COMMENT); }
 
-<COMMENT>(.|\n)*\*\)            { yybegin(YYINITIAL); }
+<COMMENT>\*\)                   { numNestComnts--;
+                                  if (numNestComnts == 0) {
+				    yybegin(YYINITIAL);
+                                  }
+                                }
+
+<COMMENT>(.|\n)                 { ; }
 
 <YYINITIAL>[" "\n\f\r\t\v]      { String token = yytext();
                                   String whitespaceType;
@@ -358,4 +370,4 @@ import java_cup.runtime.Symbol;
 				  }
                                }
 
-<YYINITIAL>.                   { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("LEXER BUG - UNMATCHED: " + yytext())); }
+<YYINITIAL>.                   { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString(yytext())); }
