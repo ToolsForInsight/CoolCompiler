@@ -1,0 +1,25 @@
+#name "./lineno3.cool"
+#1 '('
+#1 '*'
+#1 OBJECTID first
+#1 OBJECTID line
+#2 '('
+#2 '*'
+#2 OBJECTID second
+#2 OBJECTID line
+#4 '*'
+#4 ')'
+#4 OBJECTID fourth
+#4 OBJECTID line
+#5 '*'
+#5 ')'
+#7 '+'
+#8 OBJECTID abc
+#10 '('
+#10 '*'
+#10 OBJECTID tenth
+#10 OBJECTID line
+#11 '*'
+#11 ')'
+#12 TYPEID DEF
+#13 STR_CONST "string"

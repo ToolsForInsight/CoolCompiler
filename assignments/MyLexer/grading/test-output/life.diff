@@ -1,0 +1,498 @@
+0a1,402
+> '('
+> '*'
+> TYPEID The
+> TYPEID Game
+> OF
+> TYPEID Life
+> TYPEID Tendo
+> TYPEID Kayiira
+> ','
+> TYPEID Summer
+> LONGERROR
+> INT_CONST 95
+> TYPEID With
+> OBJECTID code
+> OBJECTID taken
+> OBJECTID from
+> '/'
+> OBJECTID private
+> '/'
+> OBJECTID cool
+> '/'
+> CLASS
+> '/'
+> OBJECTID examples
+> '/'
+> OBJECTID cells
+> '.'
+> OBJECTID cl
+> TYPEID This
+> OBJECTID introduction
+> OBJECTID was
+> OBJECTID taken
+> OBJECTID off
+> OBJECTID the
+> OBJECTID internet
+> '.'
+> TYPEID It
+> OBJECTID gives
+> OBJECTID a
+> OBJECTID brief
+> OBJECTID description
+> OF
+> OBJECTID the
+> TYPEID Game
+> OF
+> TYPEID Life
+> '.'
+> TYPEID It
+> OBJECTID also
+> OBJECTID gives
+> OBJECTID the
+> OBJECTID rules
+> OBJECTID by
+> OBJECTID which
+> OBJECTID this
+> OBJECTID particular
+> OBJECTID game
+> OBJECTID follows
+> '.'
+> TYPEID Introduction
+> TYPEID John
+> TYPEID Conway
+> LONGERROR
+> OBJECTID s
+> TYPEID Game
+> OF
+> TYPEID Life
+> OBJECTID is
+> OBJECTID a
+> OBJECTID mathematical
+> OBJECTID amusement
+> ','
+> OBJECTID but
+> OBJECTID it
+> OBJECTID is
+> OBJECTID also
+> OBJECTID much
+> OBJECTID more
+> ':'
+> OBJECTID an
+> OBJECTID insight
+> OBJECTID into
+> OBJECTID how
+> OBJECTID a
+> OBJECTID system
+> OF
+> OBJECTID simple
+> OBJECTID cellualar
+> OBJECTID automata
+> OBJECTID can
+> OBJECTID create
+> OBJECTID complex
+> ','
+> OBJECTID odd
+> ','
+> OBJECTID and
+> OBJECTID often
+> OBJECTID aesthetically
+> OBJECTID pleasing
+> OBJECTID patterns
+> '.'
+> TYPEID It
+> OBJECTID is
+> OBJECTID played
+> OBJECTID on
+> OBJECTID a
+> OBJECTID cartesian
+> OBJECTID grid
+> OF
+> OBJECTID cells
+> OBJECTID which
+> OBJECTID are
+> OBJECTID either
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> OBJECTID or
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> TYPEID The
+> OBJECTID game
+> OBJECTID gets
+> OBJECTID it
+> LONGERROR
+> OBJECTID s
+> OBJECTID name
+> OBJECTID from
+> OBJECTID the
+> OBJECTID similarity
+> OBJECTID between
+> OBJECTID the
+> OBJECTID behaviour
+> OF
+> OBJECTID these
+> OBJECTID cells
+> OBJECTID and
+> OBJECTID the
+> OBJECTID behaviour
+> OF
+> OBJECTID living
+> OBJECTID organisms
+> '.'
+> TYPEID The
+> TYPEID Rules
+> TYPEID The
+> OBJECTID playfield
+> OBJECTID is
+> OBJECTID a
+> OBJECTID cartesian
+> OBJECTID grid
+> OF
+> OBJECTID arbitrary
+> OBJECTID size
+> '.'
+> TYPEID Each
+> OBJECTID cell
+> IN
+> OBJECTID this
+> OBJECTID grid
+> OBJECTID can
+> OBJECTID be
+> IN
+> OBJECTID an
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> OBJECTID state
+> OBJECTID or
+> OBJECTID an
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> OBJECTID state
+> '.'
+> TYPEID On
+> OBJECTID each
+> LONGERROR
+> OBJECTID turn
+> LONGERROR
+> '('
+> OBJECTID called
+> OBJECTID a
+> OBJECTID generation
+> ','
+> ')'
+> OBJECTID the
+> OBJECTID state
+> OF
+> OBJECTID each
+> OBJECTID cell
+> OBJECTID changes
+> OBJECTID simultaneously
+> OBJECTID depending
+> OBJECTID on
+> OBJECTID it
+> LONGERROR
+> OBJECTID s
+> OBJECTID state
+> OBJECTID and
+> OBJECTID the
+> OBJECTID state
+> OF
+> OBJECTID all
+> OBJECTID cells
+> OBJECTID adjacent
+> OBJECTID to
+> OBJECTID it
+> '.'
+> TYPEID For
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> OBJECTID cells
+> ','
+> IF
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID has
+> INT_CONST 0
+> OBJECTID or
+> INT_CONST 1
+> OBJECTID neighbours
+> OBJECTID which
+> OBJECTID are
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> ','
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID turns
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> '.'
+> '('
+> LONGERROR
+> OBJECTID dies
+> OF
+> OBJECTID loneliness
+> LONGERROR
+> ')'
+> IF
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID has
+> INT_CONST 2
+> OBJECTID or
+> INT_CONST 3
+> OBJECTID neighbours
+> OBJECTID which
+> OBJECTID are
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> ','
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID stays
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> '.'
+> '('
+> OBJECTID nothing
+> OBJECTID happens
+> OBJECTID to
+> OBJECTID that
+> OBJECTID cell
+> ')'
+> IF
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID has
+> INT_CONST 4
+> ','
+> INT_CONST 5
+> ','
+> INT_CONST 6
+> ','
+> INT_CONST 7
+> ','
+> INT_CONST 8
+> ','
+> OBJECTID or
+> INT_CONST 9
+> OBJECTID neighbours
+> OBJECTID which
+> OBJECTID are
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> ','
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID turns
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> '.'
+> '('
+> LONGERROR
+> OBJECTID dies
+> OF
+> OBJECTID overcrowding
+> LONGERROR
+> ')'
+> TYPEID For
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> OBJECTID cells
+> ','
+> IF
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID has
+> INT_CONST 0
+> ','
+> INT_CONST 1
+> ','
+> INT_CONST 2
+> ','
+> INT_CONST 4
+> ','
+> INT_CONST 5
+> ','
+> INT_CONST 6
+> ','
+> INT_CONST 7
+> ','
+> INT_CONST 8
+> ','
+> OBJECTID or
+> INT_CONST 9
+> OBJECTID neighbours
+> OBJECTID which
+> OBJECTID are
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> ','
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID stays
+> LONGERROR
+> OBJECTID off
+> LONGERROR
+> '.'
+> '('
+> OBJECTID nothing
+> OBJECTID happens
+> OBJECTID to
+> OBJECTID that
+> OBJECTID cell
+> ')'
+> IF
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID has
+> INT_CONST 3
+> OBJECTID neighbours
+> OBJECTID which
+> OBJECTID are
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> ','
+> OBJECTID the
+> OBJECTID cell
+> OBJECTID turns
+> LONGERROR
+> OBJECTID on
+> LONGERROR
+> '.'
+> '('
+> INT_CONST 3
+> OBJECTID neighbouring
+> LONGERROR
+> OBJECTID alive
+> LONGERROR
+> OBJECTID cells
+> LONGERROR
+> OBJECTID give
+> OBJECTID birth
+> LONGERROR
+> OBJECTID to
+> OBJECTID a
+> OBJECTID fourth
+> '.'
+> ')'
+> TYPEID Repeat
+> OBJECTID for
+> OBJECTID as
+> OBJECTID many
+> OBJECTID generations
+> OBJECTID as
+> OBJECTID desired
+> '.'
+> '*'
+> ')'
+803a1206,1244
+> '('
+> '*'
+> TYPEID A
+> OBJECTID cell
+> OBJECTID will
+> OBJECTID live
+> IF
+> INT_CONST 2
+> OBJECTID or
+> INT_CONST 3
+> OF
+> OBJECTID it
+> LONGERROR
+> OBJECTID s
+> OBJECTID neighbors
+> OBJECTID are
+> OBJECTID alive
+> '.'
+> TYPEID It
+> OBJECTID dies
+> OBJECTID otherwise
+> '.'
+> TYPEID A
+> OBJECTID cell
+> OBJECTID is
+> OBJECTID born
+> IF
+> OBJECTID only
+> INT_CONST 3
+> OF
+> OBJECTID it
+> LONGERROR
+> OBJECTID s
+> OBJECTID neighbors
+> OBJECTID are
+> OBJECTID alive
+> '.'
+> '*'
+> ')'
+918a1360,1413
+> '('
+> '*'
+> TYPEID This
+> OBJECTID is
+> OBJECTID where
+> OBJECTID the
+> OBJECTID background
+> OBJECTID pattern
+> OBJECTID is
+> OBJECTID detremined
+> OBJECTID by
+> OBJECTID the
+> OBJECTID user
+> '.'
+> TYPEID More
+> OBJECTID patterns
+> OBJECTID can
+> OBJECTID be
+> OBJECTID added
+> OBJECTID as
+> OBJECTID long
+> OBJECTID as
+> OBJECTID whoever
+> OBJECTID adds
+> OBJECTID keeps
+> OBJECTID the
+> OBJECTID board
+> OBJECTID either
+> INT_CONST 3
+> OBJECTID x5
+> ','
+> INT_CONST 4
+> OBJECTID x5
+> ','
+> INT_CONST 5
+> OBJECTID x5
+> ','
+> INT_CONST 3
+> OBJECTID x7
+> ','
+> INT_CONST 7
+> OBJECTID x4
+> ','
+> INT_CONST 4
+> OBJECTID x4
+> OBJECTID with
+> OBJECTID the
+> OBJECTID row
+> OBJECTID first
+> THEN
+> OBJECTID column
+> '.'
+> '*'
+> ')'

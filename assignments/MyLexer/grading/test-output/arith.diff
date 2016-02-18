@@ -1,0 +1,245 @@
+0a1,25
+> '('
+> '*'
+> '*'
+> TYPEID A
+> OBJECTID contribution
+> OBJECTID from
+> TYPEID Anne
+> TYPEID Sheets
+> '('
+> OBJECTID sheets
+> '@'
+> OBJECTID cory
+> ')'
+> '*'
+> '*'
+> TYPEID Tests
+> OBJECTID the
+> OBJECTID arithmetic
+> OBJECTID operations
+> OBJECTID and
+> OBJECTID various
+> OBJECTID other
+> OBJECTID things
+> '*'
+> ')'
+363,365d387
+< '*'
+< OBJECTID num
+< '*'
+495a518,603
+> '('
+> ')'
+> '('
+> '*'
+> TYPEID The
+> CLASS
+> TYPEID A2I
+> OBJECTID provides
+> OBJECTID integer
+> '-'
+> OBJECTID to
+> '-'
+> OBJECTID string
+> OBJECTID and
+> OBJECTID string
+> '-'
+> OBJECTID to
+> '-'
+> OBJECTID integer
+> OBJECTID conversion
+> OBJECTID routines
+> '.'
+> TYPEID To
+> OBJECTID use
+> OBJECTID these
+> OBJECTID routines
+> ','
+> OBJECTID either
+> OBJECTID inherit
+> OBJECTID them
+> IN
+> OBJECTID the
+> CLASS
+> OBJECTID where
+> OBJECTID needed
+> ','
+> OBJECTID have
+> OBJECTID a
+> OBJECTID dummy
+> OBJECTID variable
+> OBJECTID bound
+> OBJECTID to
+> OBJECTID something
+> OF
+> OBJECTID type
+> TYPEID A2I
+> ','
+> OBJECTID or
+> OBJECTID simpl
+> OBJECTID write
+> '('
+> NEW
+> TYPEID A2I
+> ')'
+> '.'
+> OBJECTID method
+> '('
+> OBJECTID argument
+> ')'
+> '.'
+> '*'
+> ')'
+> '('
+> '*'
+> OBJECTID c2i
+> TYPEID Converts
+> OBJECTID a
+> INT_CONST 1
+> '-'
+> OBJECTID character
+> OBJECTID string
+> OBJECTID to
+> OBJECTID an
+> OBJECTID integer
+> '.'
+> TYPEID Aborts
+> IF
+> OBJECTID the
+> OBJECTID string
+> OBJECTID is
+> NOT
+> STR_CONST "0"
+> OBJECTID through
+> STR_CONST "9"
+> '*'
+> ')'
+585a694,705
+> '('
+> '*'
+> OBJECTID the
+> INT_CONST 0
+> OBJECTID is
+> OBJECTID needed
+> OBJECTID to
+> OBJECTID satisfy
+> OBJECTID the
+> OBJECTID typchecker
+> '*'
+> ')'
+597a718,728
+> '('
+> '*'
+> OBJECTID i2c
+> OBJECTID is
+> OBJECTID the
+> OBJECTID inverse
+> OF
+> OBJECTID c2i
+> '.'
+> '*'
+> ')'
+696a828,880
+> '('
+> '*'
+> OBJECTID a2i
+> OBJECTID converts
+> OBJECTID an
+> TYPEID ASCII
+> OBJECTID string
+> OBJECTID into
+> OBJECTID an
+> OBJECTID integer
+> '.'
+> TYPEID The
+> OBJECTID empty
+> OBJECTID string
+> OBJECTID is
+> OBJECTID converted
+> OBJECTID to
+> INT_CONST 0
+> '.'
+> TYPEID Signed
+> OBJECTID and
+> OBJECTID unsigned
+> OBJECTID strings
+> OBJECTID are
+> OBJECTID handled
+> '.'
+> TYPEID The
+> OBJECTID method
+> OBJECTID aborts
+> IF
+> OBJECTID the
+> OBJECTID string
+> OBJECTID does
+> NOT
+> OBJECTID represent
+> OBJECTID an
+> OBJECTID integer
+> '.'
+> TYPEID Very
+> OBJECTID long
+> OBJECTID strings
+> OF
+> OBJECTID digits
+> OBJECTID produce
+> OBJECTID strange
+> OBJECTID answers
+> OBJECTID because
+> OF
+> OBJECTID arithmetic
+> OBJECTID overflow
+> '.'
+> '*'
+> ')'
+786a971,994
+> '('
+> '*'
+> OBJECTID a2i_aux
+> OBJECTID converts
+> OBJECTID the
+> OBJECTID usigned
+> OBJECTID portion
+> OF
+> OBJECTID the
+> OBJECTID string
+> '.'
+> TYPEID As
+> OBJECTID a
+> OBJECTID programming
+> OBJECTID example
+> ','
+> OBJECTID this
+> OBJECTID method
+> OBJECTID is
+> OBJECTID written
+> OBJECTID iteratively
+> '.'
+> '*'
+> ')'
+865a1074,1093
+> '('
+> '*'
+> OBJECTID i2a
+> OBJECTID converts
+> OBJECTID an
+> OBJECTID integer
+> OBJECTID to
+> OBJECTID a
+> OBJECTID string
+> '.'
+> TYPEID Positive
+> OBJECTID and
+> OBJECTID negative
+> OBJECTID numbers
+> OBJECTID are
+> OBJECTID handled
+> OBJECTID correctly
+> '.'
+> '*'
+> ')'
+907a1136,1137
+> '('
+> ')'

@@ -45,6 +45,8 @@ import java_cup.runtime.Symbol;
     // empty for now
 %init}
 
+%state STRING
+
 %eofval{
 
 /*  Stuff enclosed in %eofval{ %eofval} specifies java code that is
@@ -63,6 +65,8 @@ import java_cup.runtime.Symbol;
 	   ...
 	   break;
 	*/
+    case STRING:
+      break;
     }
     return new Symbol(TokenConstants.EOF);
 %eofval}
@@ -70,62 +74,225 @@ import java_cup.runtime.Symbol;
 %class CoolLexer
 %cup
 %notunix
+%char
+%line
 
 %%
 
-"[0-9]+"                          { System.out.println("Integer: " + yytext()); }          
+<YYINITIAL>[0-9]+               { return new Symbol(TokenConstants.INT_CONST, AbstractTable.inttable.addString(yytext())); }          
 
-"[a-zA-Z_0-9]+[a-zA-Z_]+"         { String string = yytext();
-
-                                    if (string.toLowerCase().equals("class") ||
-                                        string.toLowerCase().equals("esle") ||
-                                        string.toLowerCase().equals("fi") ||
-                                        string.toLowerCase().equals("if") ||
-                                        string.toLowerCase().equals("in") ||
-                                        string.toLowerCase().equals("inherits") ||
-                                        string.toLowerCase().equals("isvoid") ||
-                                        string.toLowerCase().equals("let") ||
-                                        string.toLowerCase().equals("loop") ||
-                                        string.toLowerCase().equals("pool") ||
-                                        string.toLowerCase().equals("then") ||
-                                        string.toLowerCase().equals("while") ||
-                                        string.toLowerCase().equals("case") ||
-                                        string.toLowerCase().equals("esac") ||
-                                        string.toLowerCase().equals("new") ||
-                                        string.toLowerCase().equals("of") ||
-                                        string.toLowerCase().equals("not")) {
-
-				        System.out.println("Keyword: " + string.toLowerCase());
-		                    }
-                                    else {
-                                        
-				        System.out.println("Identifier: " + string); 
-                                    }
+<YYINITIAL>[a-zA-Z][a-zA-Z_0-9]* { String token = yytext();
+                                  
+				  if (token.equalsIgnoreCase("CLASS")) {
+				    return new Symbol(TokenConstants.CLASS); 
                                   }
-"[a-z][a-zA-Z]+"                 { String string = yytext();
-                                   if (string.toLowerCase().equals("true") ||
-                                       string.toLowerCase().equals("false")) {
-      
-                                       System.out.println("Keyword: " + string.toLowerCase());
-                                   }
-                                   else {
-    
-                                       System.out.println("Identifier: " + string);
-                                   }
+			          else if (token.equalsIgnoreCase("ELSE")) {
+				    return new Symbol(TokenConstants.ELSE); 
+				  }
+                                  else if (token.equalsIgnoreCase("FI")) {
+				    return new Symbol(TokenConstants.FI); 
+				  }
+                                  else if (token.equalsIgnoreCase("IF")) {
+				    return new Symbol(TokenConstants.IF); 
+				  }
+                                  else if (token.equalsIgnoreCase("IN")) {
+				    return new Symbol(TokenConstants.IN); 
+			          }
+                                  else if (token.equalsIgnoreCase("INHERITS")) {
+				    return new Symbol(TokenConstants.INHERITS); 
+				  }
+                                  else if (token.equalsIgnoreCase("ISVOID")) {
+				    return new Symbol(TokenConstants.ISVOID); 
+				  }
+                                  else if (token.equalsIgnoreCase("LET")) {
+				    return new Symbol(TokenConstants.LET); 
+				  }
+				  else if (token.equalsIgnoreCase("LOOP")) {
+				    return new Symbol(TokenConstants.LOOP); 
+				  }
+                                  else if (token.equalsIgnoreCase("POOL")) {
+				    return new Symbol(TokenConstants.POOL); 
+				  }
+                                  else if (token.equalsIgnoreCase("THEN")) {
+				    return new Symbol(TokenConstants.THEN); 
+				  }
+				  else if (token.equalsIgnoreCase("WHILE")) {
+				    return new Symbol(TokenConstants.WHILE); 
+				  }
+                                  else if (token.equalsIgnoreCase("CASE")) {
+				    return new Symbol(TokenConstants.CASE); 
+				  }
+                                  else if (token.equalsIgnoreCase("ESAC")) {
+				    return new Symbol(TokenConstants.ESAC); 
+				  }
+                                  else if (token.equalsIgnoreCase("NEW")) {
+				    return new Symbol(TokenConstants.NEW); 
+				  }
+				  else if (token.equalsIgnoreCase("OF")) {
+				    return new Symbol(TokenConstants.OF); 
+				  }
+				  else if (token.equalsIgnoreCase("NOT")) {
+				    return new Symbol(TokenConstants.NOT); 
+				  } 			
+		                  else if (java.lang.Character.isLowerCase(token.charAt(0))) {
+                                    if (token.toLowerCase().equals("true") ||
+                                        token.toLowerCase().equals("false")) {
+                                      return new Symbol(TokenConstants.BOOL_CONST, AbstractTable.stringtable.addString(token.toLowerCase()));
+                                    }
+                                    else {
+				      return new Symbol(TokenConstants.OBJECTID, AbstractTable.idtable.addString(token));
+                                    }
+				  }
+				  else {
+				    return new Symbol(TokenConstants.TYPEID, AbstractTable.idtable.addString(token));
+				  }
+                                }
+
+<YYINITIAL>[-*/<=(){},~.@;:+]   { String token = yytext();
+
+                                 if (token.equals("+")) {
+				   return new Symbol(TokenConstants.PLUS); 
                                  }
+			         else if (token.equals("-")) {
+		         	    return new Symbol(TokenConstants.MINUS); 
+				  }
+                                  else if (token.equals("*")) {
+				    return new Symbol(TokenConstants.MULT); 
+				  }
+                                  else if (token.equals("/")) {
+				    return new Symbol(TokenConstants.DIV); 
+				  }
+                                  else if (token.equals("<")) {
+				    return new Symbol(TokenConstants.LT); 
+			          }
+                                  else if (token.equals("=")) {
+				    return new Symbol(TokenConstants.EQ); 
+				  }
+                                  else if (token.equals("(")) {
+				    return new Symbol(TokenConstants.LPAREN); 
+				  }
+                                  else if (token.equals(")")) {
+				    return new Symbol(TokenConstants.RPAREN); 
+				  }
+				  else if (token.equals("{")) {
+				    return new Symbol(TokenConstants.LBRACE); 
+				  }
+                                  else if (token.equals("}")) {
+				    return new Symbol(TokenConstants.RBRACE); 
+				  }
+                                  else if (token.equals(".")) {
+				    return new Symbol(TokenConstants.DOT); 
+				  }
+				  else if (token.equals("~")) {
+				    return new Symbol(TokenConstants.NEG); 
+				  }		
+		                  else if (token.equals(";")) {
+				    return new Symbol(TokenConstants.SEMI); 
+				  }
+		                  else if (token.equals("@")) {
+				    return new Symbol(TokenConstants.AT); 
+				  }
+		                  else if (token.equals(",")) {
+				    return new Symbol(TokenConstants.COMMA); 
+				  }
+		                  else {
+				    return new Symbol(TokenConstants.COLON); 
+				  }
+                                }
 
-"[+-*/~<=(){}]"                   { System.out.println("Special: " + yytext()); }
-"[<=]"                            { System.out.println("Special: " + yytext()); }
+<YYINITIAL>=>                   { return new Symbol(TokenConstants.DARROW); }
 
-"\"[.]*\""                        { System.out.println("String: " + yytext()); }
+<YYINITIAL>\<-                  { return new Symbol(TokenConstants.ASSIGN); }
 
-"--[.]\n"                       { System.out.println("Comment: " + yytext()); }
-"\*[.]\*"                           { System.out.prinn("Comment: " + yytext()); }
+<YYINITIAL>\<=                  { return new Symbol(TokenConstants.LE); }
 
-"[ \n\f\r\t\v]+"           { System.out.println("Whitespace: " + yytext()); }
+<YYINITIAL>\"                   { yybegin(STRING); }
 
-.                               { /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+<STRING>([^\"\n]|(\\\\)*(\\\"))*(\\\\)*\n   { curr_lineno++;
+                                            yybegin(YYINITIAL);
+				            return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Unterminated string constant"));
+                                          }
+
+<STRING>([^\"\n]|(\\\\)*\\(\n)|(\\\"))*\"   { String string = yytext();
+                                  string = string.substring(1, string.length()); 
+  
+                                  int charPos = 0;
+                                  char currChar;
+                                  char nextChar;
+                                  char specialChar;
+
+                                  while (charPos < string.length()) {
+
+				    System.out.println("beginning charPos: " + charPos);
+				    System.out.println("beginning string: " + string);
+                                    currChar = string.charAt(charPos);
+
+                                    if (currChar == '\\') {
+
+                                      nextChar = string.charAt(charPos+1);
+
+                                      if (nextChar == 'b' || nextChar == 'f' ||
+                                          nextChar == 'n' || nextChar == 't') {
+
+					switch (nextChar) {
+					  case 'b': specialChar = '\b'; break; 
+					  case 'n': specialChar = '\n'; break;
+					  case 'f': specialChar = '\f'; break;
+				  	  default: specialChar = '\t';
+					}
+
+				        string = string.substring(0, charPos) +
+                                          specialChar +
+					  string.substring(charPos+2, string.length());
+                                      }
+				      else {
+
+                                        string = string.substring(0, charPos) +
+                                          string.substring(charPos+1, string.length());
+				      }
+				    }
+                                    else if (currChar == '\n') {
+				      curr_lineno++;
+				      return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("Unterminated string constant"));
+                                    }
+				    else if(currChar == '\0') {
+				      return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("String with null character"));
+				    }
+                                    charPos++;
+				    System.out.println("Ending string: " + string);
+                                  }
+
+				  return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(string));
+                                }
+
+<YYINITIAL>--.*                 { String token = yytext();
+				  String comment = token.substring(2, token.length()-1); }
+
+<YYINITIAL>\*.*\*               { String token = yytext();
+                                  String comment = token.substring(1, token.length()-2); }
+
+<YYINITIAL>[" "\n\f\r\t\v]      { String token = yytext();
+                                  String whitespaceType;
+
+                                  if (token.equals(" ")) {
+                                 
+				      whitespaceType = " ";
+				  }
+				  else {
+                                    
+				      char escape = token.charAt(0);
+
+                                      switch (escape) {
+				          case '\n': 
+					    whitespaceType = "\\n"; 
+					    curr_lineno++;
+					    break;
+				          case '\f': whitespaceType = "\\f"; break;
+				          case '\r': whitespaceType = "\\r"; break;
+				          case '\t': whitespaceType = "\\t"; break;
+                                          default: whitespaceType = "\\v";
+                                      }
+				  }
+                               }
+
+<YYINITIAL>.                   { return new Symbol(TokenConstants.ERROR, AbstractTable.stringtable.addString("LEXER BUG - UNMATCHED: " + yytext())); }

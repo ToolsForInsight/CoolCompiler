@@ -1,0 +1,8 @@
+#1 '('
+#2 ERROR "Unterminated string constant"
+#4 ERROR "Unterminated string constant"
+#4 '*'
+#4 ')'
+#5 ERROR "LEXER BUG - UNMATCHED: !"
+#6 OBJECTID fjdk
+#7 STR_CONST ""

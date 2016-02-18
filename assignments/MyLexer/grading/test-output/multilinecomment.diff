@@ -1,0 +1,16 @@
+0a1,4
+> '('
+> ')'
+> '('
+> ')'
+7c11
+< NOT
+---
+> IN
+9a14,16
+> OBJECTID with
+> OBJECTID many
+> OBJECTID lines
+11a19,20
+> '('
+> ')'
